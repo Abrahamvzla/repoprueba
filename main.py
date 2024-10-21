@@ -4,11 +4,22 @@ from fastapi.responses import HTMLResponse,JSONResponse
 from pydantic import BaseModel, Field
 from typing import Optional
 import json
+from jwt_manager import create_token
 
 app = FastAPI(
     title="CURSO PRUEBA",
     version="1.0"
 )
+
+class User(BaseModel):
+    email:str
+    password:str
+
+@app.post('/login', tags=['auth'])
+def login(user: User):
+    if user.email == "moisesdelciervo@gmail.com" and user.password== "admin":
+        token: str =create_token(user.dict())
+    return JSONResponse(status_code=200,content=token)
 
 class Beneficio(BaseModel):
     id: Optional[int] = None

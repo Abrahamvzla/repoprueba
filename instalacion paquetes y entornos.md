@@ -18,6 +18,10 @@ En windows:
 En Linux:
 ``nombre_de_entorno/bin/activate``
 
+en caso de error
+
+``Set-ExecutionPolicy RemoteSigned``
+
 ### Instalar modulos a usar
 
 `` pip install fastapi``
