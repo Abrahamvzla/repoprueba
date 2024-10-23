@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 import json
 from jwt_manager import create_token
+from fastapi.security import HTTPBearer
 
 app = FastAPI(
     title="CURSO PRUEBA",
@@ -15,6 +16,10 @@ class User(BaseModel):
     email:str
     password:str
 
+class JWTBearer(HTTPBearer): 
+    async def __call__(self, request: Request):
+        return await super().__call__(request)
+    
 @app.post('/login', tags=['auth'])
 def login(user: User):
     if user.email == "moisesdelciervo@gmail.com" and user.password== "admin":
@@ -54,11 +59,11 @@ def message():
 #    return Response(status_code=200, content=json.dumps(data), headers={"Content-Type": "application/json"})
 
 @app.get('/beneficios', tags=['beneficios'])
-def obtener_lista_beneficios():
+async def obtener_lista_beneficios():
     return JSONResponse(content=beneficios)
 
 @app.get('/beneficios/{id}', tags=['beneficios'])
-def obtener_un_benefico(id: int):
+async def obtener_un_benefico(id: int):
     for item in beneficios:
         if item["id"] == id:
             #return item
@@ -67,7 +72,7 @@ def obtener_un_benefico(id: int):
     #return []
 
 @app.get('/beneficios/', tags=['beneficios'])
-def get_benefcios_por_fecha(fecha: str):
+async def get_benefcios_por_fecha(fecha: str):
     data = [item for item in beneficios if item['fecha'] == fecha]
     return JSONResponse(content=data)
     #return [item for item in beneficios if item['fecha'] == fecha]
@@ -79,7 +84,7 @@ async def crear_beneficio(request: Request):
     return beneficios
 
 @app.post('/beneficios', tags=['beneficios'])
-def registrar_beneficios(beneficio: Beneficio):
+async def registrar_beneficios(beneficio: Beneficio):
     #beneficios.append(beneficio.dict())
     return beneficios
 
